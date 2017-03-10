@@ -1,6 +1,4 @@
-from fileManager import save, load
-
-FILE = 'data.file'
+from fileManager import load, FILE
 
 data = load(FILE)
 
