@@ -1,5 +1,7 @@
 import pickle
 
+FILE = 'data.file'
+
 def save(data, filename):
 	with open(filename, 'wb') as output_data:
 		pickle.dump(data, output_data, pickle.HIGHEST_PROTOCOL)
@@ -18,4 +20,4 @@ def test():
 	print ld_obj.name
 	print ld_obj.value
 
-test()
+# test()

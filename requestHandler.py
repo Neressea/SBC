@@ -2,29 +2,40 @@ from parser import parseFile
 from query import query
 import requests
 import time
+from fileManager import save, load, FILE
 
 USER = 'student'
 PASS = '5hoPpeR4'
-HEADER = 'application/sparql-results+json, application/json '
+HEADER = 'application/sparql-results+json'
 ADDRESS = 'https://pgxlod.loria.fr/bigdata/namespace/kb/sparql'
 
 def requestSPARQL(gene, drug):
     print "Request for (%s, %s)" % (gene, drug),
-    r = requests.post(
+    res = requests.post(
         ADDRESS,
         auth=(USER, PASS),
         headers={'Accept': HEADER},
         data={'query': query % {'gene': gene, 'drug': drug}},
         verify=False
     )
-    print "\t[OK]"
-    return r.content
+    if res.status_code == 200:
+        print "[OK]",
+    else:
+        print "[FAIL]",
+    return res.content
 
-values = parseFile('./data/training_set_91_91.tsv')
+values = parseFile('./data/training_set_91_182.tsv')
 
-# for value in values:
-#     request(gene=value[0], drug=value[1])
+data = []
 
-start_time = time.time()
-res = requestSPARQL(gene=values[0][0], drug=values[0][1])
-print("\t(%s seconds)" % (time.time() - start_time))
+l = len(values)
+i = 1
+for value in values:
+    print "[%d/%d]\t" % (i, l),
+    res = requestSPARQL(gene=value[0], drug=value[1])
+    print res
+    i += 1
+    data.append({'gene': value[0], 'drug': value[1], 'asso': value[2], 'json': res})
+    print "\n",
+
+save(data, FILE)
