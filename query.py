@@ -20,36 +20,17 @@ PREFIX so: <http://bio2rdf.org/sequence_ontology:>
 PREFIX umls: <http://bio2rdf.org/umls:>
 PREFIX uniprot: <http://bio2rdf.org/uniprot:>
 
-CONSTRUCT {}
+SELECT DISTINCT ?relation ?action
 WHERE {
-    pharmgkb:%(drug)s pharmgkbv:x-drugbank ?drug2.
-    pharmgkb:%(drug)s pharmgkbv:x-umls ?cui.
-    pharmgkb:%(drug)s pharmgkbv:x-pubchemcompound ?compound.
-    ?drug3 siderv:pubchem-flat-compound-id ?compound.
-    ?drug_target dbv:drug ?drug2.
-    ?drug_target dbv:action ?action.
-    ?drug2 dbv:x-pubchemcompound ?compound.
-    ?drug2 dbv:x-atc ?atc.
-    ?drug_target dbv:target ?target.
-    ?target dbv:x-uniprot ?prot.
-    pharmgkb:%(gene)s pharmgkbv:x-uniprot ?prot.
-    pharmgkb:%(gene)s pharmgkbv:x-ncbigene ?gene.
-    ?gene2 clinvarv:x-gene ?gene.
-    ?gene2 clinvarv:x-sequence_ontology ?so.
-    ?rcv clinvarv:Variant_Gene ?gene2.
-    ?rcv clinvarv:Variant_Phenotype ?x.
-    ?x clinvarv:x-medgen ?disease2.
-    ?gene bio2rdfv:x-identifiers.org ?gene3.
-    ?var sio:SIO_000628 ?gene3.
-    ?var sio:SIO_000628 ?disease.
-    ?gene3 sio:SIO_000062 ?react.
-    ?disease sio:SIO_000095 ?mesh.
-    ?disease sio:SIO_000008 ?semantic_type.
-    ?disease skos:exactMatch ?disease2.
-    ?drug3 siderv:side-effect ?disease3.
-    ?disease skos:exactMatch ?disease3.
-    ?disease4 mapping:medispan_to_sider ?disease3.
-    ?disease2 mapping:clinvar_to_sider ?disease3.
-    ?disease2 mapping:clinvar_to_medispan ?disease4.
+  pharmgkb:PA449053   pharmgkbv:x-drugbank  ?drugbank.
+  pharmgkb:PA107      pharmgkbv:x-uniprot   ?uniprot.
+  ?relation           dbv:drug              ?drugbank.
+  ?drugbankGene       dbv:x-uniprot         ?uniprot.
+  { ?relation         dbv:target            ?drugbankGene }
+  UNION { ?relation   dbv:carrier     ?drugbankGene }
+  UNION { ?relation   dbv:enzyme      ?drugbankGene }
+  UNION { ?relation   dbv:transporter ?drugbankGene }
+  ?relation           dbv:action            ?action.
 }
 """
+#A la place du ?relation tu peux mettre un count(?action) as ?numberAction par exemple
