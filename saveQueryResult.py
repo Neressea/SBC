@@ -1,6 +1,6 @@
 from parser import parseFile
 from requestHandler import requestSPARQL
-from fileManager import save
+from fileManager import save, FILE
 
 values = parseFile('./data/training_set_91_91.tsv')
 
@@ -13,8 +13,7 @@ for value in values:
     print "[%s/%d] Request for (%s, %s)" % (ind, l, value[0], value[1]),
     res = requestSPARQL(gene=value[0], drug=value[1])
     if res.status_code == 200:
-        print "\t[OK]",
-        print res.content
+        print "\t[OK]"
         data.append({'gene': value[0], 'drug': value[1], 'asso': value[2], 'json': res.content})
     else:
         print "\t\t[FAIL]",

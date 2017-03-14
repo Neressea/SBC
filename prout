@@ -1,4 +1,3 @@
-query = """
 PREFIX atc: <http://bio2rdf.org/atc:>
 PREFIX bio2rdfv: <http://bio2rdf.org/bio2rdf_vocabulary:>
 PREFIX clinvar: <http://bio2rdf.org/clinvar:>
@@ -20,10 +19,10 @@ PREFIX so: <http://bio2rdf.org/sequence_ontology:>
 PREFIX umls: <http://bio2rdf.org/umls:>
 PREFIX uniprot: <http://bio2rdf.org/uniprot:>
 
-CONSTRUCT {?relation           dbv:action            ?action.}
+SELECT DISTINCT ?relation ?action
 WHERE {
-  pharmgkb:%(drug)s   pharmgkbv:x-drugbank  ?drugbank.
-  pharmgkb:%(gene)s      pharmgkbv:x-uniprot   ?uniprot.
+  pharmgkb:PA449053   pharmgkbv:x-drugbank  ?drugbank.
+  pharmgkb:PA107      pharmgkbv:x-uniprot   ?uniprot.
   ?relation           dbv:drug              ?drugbank.
   ?drugbankGene       dbv:x-uniprot         ?uniprot.
   { ?relation         dbv:target            ?drugbankGene }
@@ -32,4 +31,3 @@ WHERE {
   UNION { ?relation   dbv:transporter ?drugbankGene }
   ?relation           dbv:action            ?action.
 }
-"""
